@@ -1,4 +1,4 @@
-package int222.project.config;
+package int222.project.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -7,14 +7,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
-	@Value("#{'${BackEnd.origin.method}'.split(',')}")
-	private String[] methodList;
-	@Value("#{'${BackEnd.origin.host}'.split(',')}")
-	String[] hostList;
-
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins(hostList).allowedMethods(methodList);
-	}
+//	@Value("#{'${BackEnd.origin.method}'.split(',')}")
+//	private String[] methodList;
+//	@Value("#{'${BackEnd.origin.host}'.split(',')}")
+//	String[] hostList;
+//
+//	@Override
+//	public void addCorsMappings(CorsRegistry registry) {
+//		registry.addMapping("/**").allowedOrigins(hostList).allowedMethods(methodList);
+//	}
 
 }

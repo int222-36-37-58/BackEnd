@@ -1,5 +1,6 @@
 package int222.project.models;
 
+import java.security.Timestamp;
 import java.sql.Date;
 import java.util.List;
 
@@ -14,8 +15,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler","orderDetails","comments"})
 public class Product {
 
 	@Id

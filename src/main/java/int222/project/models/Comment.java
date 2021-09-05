@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler","product"})
 @Entity
 public class Comment {
 
@@ -17,7 +19,7 @@ public class Comment {
 	private String content;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "productid", nullable = false)
+	@JoinColumn(name = "productId", nullable = false)
 	private Product product;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

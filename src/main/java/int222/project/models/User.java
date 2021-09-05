@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
-//@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product","order","comment" })
 public class User {
 
 	@Id
@@ -26,13 +26,13 @@ public class User {
 	private String role;
 	
 	@OneToMany(orphanRemoval = true, mappedBy = "user")
-	private List<Product> products;
+	private List<Product> product;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "user")
-	private List<Order> orders;
+	private List<Order> order;
 	
 	@OneToMany(orphanRemoval = true, mappedBy = "user")
-	private List<Comment> comments;
+	private List<Comment> comment;
 
 	public int getUserId() {
 		return userId;
@@ -90,28 +90,28 @@ public class User {
 		this.role = role;
 	}
 
-	public List<Product> getProducts() {
-		return products;
+	public List<Product> getProduct() {
+		return product;
 	}
 
-	public void setProducts(List<Product> products) {
-		this.products = products;
+	public void setProducts(List<Product> product) {
+		this.product = product;
 	}
 
-	public List<Order> getOrders() {
-		return orders;
+	public List<Order> getOrder() {
+		return order;
 	}
 
-	public void setOrders(List<Order> orders) {
-		this.orders = orders;
+	public void setOrders(List<Order> order) {
+		this.order = order;
 	}
 
-	public List<Comment> getComments() {
-		return comments;
+	public List<Comment> getComment() {
+		return comment;
 	}
 
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
+	public void setComment(List<Comment> comment) {
+		this.comment = comment;
 	}
 	
 	

@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product","orderDetails"})
 public class Color {
 
 	@Id
@@ -24,7 +24,7 @@ public class Color {
 	@ManyToMany
 	private List<Product> product;
 
-	@OneToMany(orphanRemoval = true, mappedBy = "color")
+	@OneToMany(mappedBy = "color")
 	private List<OrderDetail> orderDetails;
 
 	public int getColorId() {
