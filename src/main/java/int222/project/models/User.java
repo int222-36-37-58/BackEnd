@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product","order","comment" })
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product","order","comment"})
 public class User {
 
 	@Id
