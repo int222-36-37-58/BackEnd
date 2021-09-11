@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product","order","comment"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product","userOrder","comment"})
 public class User {
 
 	@Id
@@ -29,7 +29,7 @@ public class User {
 	private List<Product> product;
 
 	@OneToMany(orphanRemoval = true, mappedBy = "user")
-	private List<Order> order;
+	private List<UserOrder> userOrder;
 	
 	@OneToMany(orphanRemoval = true, mappedBy = "user")
 	private List<Comment> comment;
@@ -98,12 +98,12 @@ public class User {
 		this.product = product;
 	}
 
-	public List<Order> getOrder() {
-		return order;
+	public List<UserOrder> getUserOrder() {
+		return userOrder;
 	}
 
-	public void setOrders(List<Order> order) {
-		this.order = order;
+	public void setOrders(List<UserOrder> userOrder) {
+		this.userOrder = userOrder;
 	}
 
 	public List<Comment> getComment() {

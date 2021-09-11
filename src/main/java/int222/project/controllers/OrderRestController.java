@@ -9,26 +9,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import int222.project.models.Order;
-import int222.project.repositories.OrderJpaRepository;
+import int222.project.models.UserOrder;
+import int222.project.repositories.UserOrderJpaRepository;
 import int222.project.repositories.UserJpaRepositories;
 
 @RestController
 public class OrderRestController {
 	@Autowired
-	OrderJpaRepository orderRepo;
+	UserOrderJpaRepository orderRepo;
 	@Autowired
 	UserJpaRepositories userRepo;
 	@GetMapping("/getallorder")
-	public List<Order> getAllOrder() {
+	public List<UserOrder> getAllOrder() {
 		return orderRepo.findAll();
 	}
 	@GetMapping("/getuserorder/{id}")
-	public List<Order> getUserOrder(@PathVariable int id){
+	public List<UserOrder> getUserOrder(@PathVariable int id){
 		return orderRepo.findByUser(userRepo.findById(id).get());
 	}
 	@PostMapping("/addorder")
-	public Order addOrder(@RequestBody Order order) {
+	public UserOrder addOrder(@RequestBody UserOrder order) {
 		return orderRepo.save(order);
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,46 +50,47 @@ public class ProductsRestController {
 	};
 
 	@PostMapping("/products/add")
-	public Product post(@RequestParam("imageFile") MultipartFile imageFile, @RequestPart Product product) {
-		if (productsJpaRepository.existsById(product.getProductId())) {
-			throw new AllException(ExceptionResponse.ERROR_CODE.PRODUCT_ALREADY_EXIST,
-					"id: {" + product.getProductId() + "} already exist !!");
-		}
-		if (productsJpaRepository.findByName(product.getName()) != null) {
-			throw new AllException(ExceptionResponse.ERROR_CODE.DUPICATE_IN_PRODUCTS,
-					"Name: {" + product.getName() + "} dupicate!!");
-		}
-		if (imageFile.getContentType().equals("image/png")) {
-			product.setImageName(ES.randomString(3)+product.getName() + ".png");
-		} else if (imageFile.getContentType().equals("image/jpeg")) {
-			product.setImageName(ES.randomString(3)+product.getName() + ".jpg");
-		} else {
-			throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_UPLOAD_THIS_FILETYPE,
-					"can upload png and jpg only");
-		}
+	public Product post(@RequestBody Product product) {
+//		@RequestParam("imageFile") MultipartFile imageFile,@RequestPart Product product
+//		if (productsJpaRepository.existsById(product.getProductId())) {
+//			throw new AllException(ExceptionResponse.ERROR_CODE.PRODUCT_ALREADY_EXIST,
+//					"id: {" + product.getProductId() + "} already exist !!");
+//		}
+//		if (productsJpaRepository.findByName(product.getName()) != null) {
+//			throw new AllException(ExceptionResponse.ERROR_CODE.DUPICATE_IN_PRODUCTS,
+//					"Name: {" + product.getName() + "} dupicate!!");
+//		}
+//		if (imageFile.getContentType().equals("image/png")) {
+//			product.setImageName(ES.randomString(3)+product.getName() + ".png");
+//		} else if (imageFile.getContentType().equals("image/jpeg")) {
+//			product.setImageName(ES.randomString(3)+product.getName() + ".jpg");
+//		} else {
+//			throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_UPLOAD_THIS_FILETYPE,
+//					"can upload png and jpg only");
+//		}
 		productsJpaRepository.save(product);
-		try {
-			ES.saveImage(imageFile, product.getImageName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			ES.saveImage(imageFile, product.getImageName());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		return product;
 	};
 
 	@DeleteMapping("/products/{id}")
 	public String delete(@PathVariable int id) {
-		Product product = productsJpaRepository.findById(id).get();
-		if (product == null) {
-			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
-					"id: {" + id + "} Does not fine Id!!");
-		}
+//		Product product = productsJpaRepository.findById(id).get();
+//		if (product == null) {
+//			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
+//					"id: {" + id + "} Does not fine Id!!");
+//		}
 		productsJpaRepository.deleteById(id);
-		try {
-			ES.deleteImage(product.getImageName());
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("delete error");
-		}
+//		try {
+//			ES.deleteImage(product.getImageName());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.out.println("delete error");
+//		}
 
 		return "Delete Success";
 	};

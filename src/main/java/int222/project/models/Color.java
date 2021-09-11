@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
@@ -21,10 +23,11 @@ public class Color {
 	private int colorId;
 	private String colorName;
 
-	@ManyToMany
+	@ManyToMany()
+	@JoinTable(name = "HaveColor", joinColumns = @JoinColumn(name = "productId"), inverseJoinColumns = @JoinColumn(name = "colorId"))
 	private List<Product> product;
 
-	@OneToMany(mappedBy = "color")
+	@OneToMany(orphanRemoval = true,mappedBy = "color")
 	private List<OrderDetail> orderDetails;
 
 	public int getColorId() {

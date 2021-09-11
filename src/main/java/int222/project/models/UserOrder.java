@@ -1,6 +1,7 @@
 package int222.project.models;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -17,15 +18,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
-//@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler", "product" })
-public class Order {
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler",  })
+public class UserOrder {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int orderId;
-	private LocalDateTime dateTime;
+	private Date date;
 	
-	@OneToMany(orphanRemoval = true, mappedBy = "order")
+	@OneToMany(orphanRemoval = true, mappedBy = "userOrder")
 	private List<OrderDetail> orderDetails ;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -40,12 +41,12 @@ public class Order {
 		this.orderId = orderId;
 	}
 
-	public LocalDateTime getDateTime() {
-		return dateTime;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setDateTime(LocalDateTime dateTime) {
-		this.dateTime = dateTime;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public List<OrderDetail> getOrderDetails() {

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import int222.project.models.Comment;
 import int222.project.repositories.CommentJpaRepository;
 import int222.project.repositories.ProductsJpaRepository;
+import int222.project.repositories.UserJpaRepositories;
 
 @RestController
 public class CommentRestController {
@@ -20,7 +21,8 @@ public class CommentRestController {
 	CommentJpaRepository commentJpaRepository;
 	@Autowired
 	ProductsJpaRepository productRepo;
-
+	@Autowired
+	UserJpaRepositories userRepo;
 	@GetMapping("/allcomments")
 	public List<Comment> getAllComment() {
 		return commentJpaRepository.findAll();
@@ -33,6 +35,8 @@ public class CommentRestController {
 	}
 	@PostMapping("/addcomment")
 	public Comment addCommment(@RequestBody Comment comment) {
+//		comment.setProduct(productRepo.findById(id).get());
+		comment.setUser(userRepo.findById(comment.getUser().getUserId()).get());
 		return commentJpaRepository.save(comment);
 	}
 	@PutMapping("editcomment")

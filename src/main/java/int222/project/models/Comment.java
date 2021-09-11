@@ -23,7 +23,7 @@ public class Comment {
 	private Product product;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "userid", nullable = false)
+	@JoinColumn(name = "userId", nullable = false)
 	private User user;
 
 	public int getCommentId() {

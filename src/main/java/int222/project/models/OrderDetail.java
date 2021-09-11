@@ -23,7 +23,7 @@ public class OrderDetail {
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "orderid", nullable = false)
-	private Order order;
+	private UserOrder userOrder;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "colorid", nullable = false)
@@ -57,12 +57,12 @@ public class OrderDetail {
 		this.totalPrice = totalPrice;
 	}
 
-	public Order getOrder() {
-		return order;
+	public UserOrder getOrder() {
+		return userOrder;
 	}
 
-	public void setOrder(Order order) {
-		order = order;
+	public void setOrder(UserOrder userOrder) {
+		this.userOrder = userOrder;
 	}
 
 	public Color getColor() {
