@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler","order"})
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler","userOrder"})
 public class OrderDetail {
 
 	@Id
@@ -22,7 +22,7 @@ public class OrderDetail {
 	private int totalPrice;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "orderid", nullable = false)
+	@JoinColumn(name = "userOrderid", nullable = false)
 	private UserOrder userOrder;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -57,11 +57,11 @@ public class OrderDetail {
 		this.totalPrice = totalPrice;
 	}
 
-	public UserOrder getOrder() {
+	public UserOrder getUserOrder() {
 		return userOrder;
 	}
 
-	public void setOrder(UserOrder userOrder) {
+	public void setUserOrder(UserOrder userOrder) {
 		this.userOrder = userOrder;
 	}
 

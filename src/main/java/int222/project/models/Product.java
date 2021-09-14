@@ -44,10 +44,10 @@ public class Product {
 	@JoinColumn(name = "userid", nullable = false)
 	private User user;
 
-	@OneToMany(orphanRemoval = true, mappedBy = "product")
+	@OneToMany(mappedBy = "product")
 	private List<OrderDetail> orderDetails;
 	
-	@OneToMany(orphanRemoval = true, mappedBy = "product")
+	@OneToMany( mappedBy = "product")
 	private List<Comment> comments;
 
 	public int getProductId() {

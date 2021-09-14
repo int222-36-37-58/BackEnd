@@ -23,7 +23,7 @@ public class UserOrder {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int orderId;
+	private int userOrderId;
 	private Date date;
 	
 	@OneToMany(orphanRemoval = true, mappedBy = "userOrder")
@@ -33,12 +33,12 @@ public class UserOrder {
 	@JoinColumn(name = "userid", nullable = false)
 	private User user;
 
-	public int getOrderId() {
-		return orderId;
+	public int getUserOrderId() {
+		return userOrderId;
 	}
 
-	public void setOrderId(int orderId) {
-		this.orderId = orderId;
+	public void setUserOrderId(int userOrderId) {
+		this.userOrderId = userOrderId;
 	}
 
 	public Date getDate() {

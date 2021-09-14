@@ -36,10 +36,9 @@ public class ColorRestController {
 	@DeleteMapping("/colordelete/{id}")
 	public String deleteColor(@PathVariable int id) {
 		Color c=colorJpaRepository.findById(id).get();
-//		if(c.getProduct().isEmpty()){
-//		colorJpaRepository.deleteById(id);
-		colorJpaRepository.delete(c);
-//		}
+		if(c.getProduct().isEmpty()){
+		colorJpaRepository.deleteById(id);
+		}
 		
 		return "delete success";
 	}
