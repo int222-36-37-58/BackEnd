@@ -38,8 +38,9 @@ public class ColorRestController {
 		Color c=colorJpaRepository.findById(id).get();
 		if(c.getProduct().isEmpty()){
 		colorJpaRepository.deleteById(id);
-		}
-		
 		return "delete success";
+		}
+		else
+		return "delete fail";
 	}
 }

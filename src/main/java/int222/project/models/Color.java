@@ -24,7 +24,7 @@ public class Color {
 	private String colorName;
 
 	@ManyToMany()
-	@JoinTable(name = "HaveColor", joinColumns = @JoinColumn(name = "productId"), inverseJoinColumns = @JoinColumn(name = "colorId"))
+	@JoinTable(name = "HaveColor", joinColumns = @JoinColumn(name = "colorId"), inverseJoinColumns = @JoinColumn(name = "productId"))
 	private List<Product> product;
 
 	@OneToMany(orphanRemoval = true,mappedBy = "color")

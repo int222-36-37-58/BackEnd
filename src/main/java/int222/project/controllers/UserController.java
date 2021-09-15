@@ -26,12 +26,12 @@ public class UserController {
 	@Autowired
 	UserJpaRepositories userRepo;
 
-	@GetMapping("/setest")
+	@GetMapping("/users")
 	public List<User> getAllUser() {
 		return userRepo.findAll();
 	};
 
-	@GetMapping("/setest/{id}")
+	@GetMapping("/user/{id}")
 	public User getAllUser(@PathVariable int id) {
 		return userRepo.findById(id).get();
 	};

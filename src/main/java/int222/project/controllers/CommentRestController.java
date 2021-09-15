@@ -3,6 +3,7 @@ package int222.project.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +40,7 @@ public class CommentRestController {
 		comment.setUser(userRepo.findById(comment.getUser().getUserId()).get());
 		return commentJpaRepository.save(comment);
 	}
-	@PutMapping("editcomment")
+	@PutMapping("/editcomment")
 	public Comment editComment(@RequestBody Comment comment) {
 		Comment c = commentJpaRepository.findById(comment.getCommentId()).get();
 		c.setContent(comment.getContent());
@@ -47,4 +48,11 @@ public class CommentRestController {
 		c.setUser(comment.getUser());
 		return commentJpaRepository.save(c);
 	}
+	@DeleteMapping("/commentdelete/{id}")
+	public String deleteComment(@PathVariable int id) {
+		commentJpaRepository.deleteById(id);
+		return "delete success";
+	}
+	
+	
 }
