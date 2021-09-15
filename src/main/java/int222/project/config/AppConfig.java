@@ -7,9 +7,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
-//	@Value("#{'${BackEnd.origin.method}'.split(',')}")
+//	@Value("#{'${project.origin.method}'.split(',')}")
 //	private String[] methodList;
-//	@Value("#{'${BackEnd.origin.host}'.split(',')}")
+//	@Value("#{'${project.origin.host}'.split(',')}")
 //	String[] hostList;
 //
 //	@Override

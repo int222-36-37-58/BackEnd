@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import int222.project.models.User;
 import int222.project.repositories.UserJpaRepositories;
 
-@CrossOrigin(origins = "http://52.187.120.198:8080")
 @RestController
 
 public class UserController {
@@ -35,10 +33,12 @@ public class UserController {
 	public User getAllUser(@PathVariable int id) {
 		return userRepo.findById(id).get();
 	};
+
 	@PostMapping("/register")
-	public User postUser(@RequestBody User user) {//orrequestBody
+	public User postUser(@RequestBody User user) {// orrequestBody
 		return userRepo.save(user);
 	}
+
 	@PutMapping("/edituser")
 	public User editUser(@RequestBody User user) {
 		User userOld = userRepo.findById(user.getUserId()).get();
@@ -47,10 +47,11 @@ public class UserController {
 		userOld.setAddress(user.getAddress());
 		userOld.setTel(user.getTel());
 		userOld.setFullName(user.getFullName());
-		userOld.setRole(user.getRole());		
+		userOld.setRole(user.getRole());
 		return userRepo.save(userOld);
 	}
-	@DeleteMapping("use/delete/{id}")  //change name 
+
+	@DeleteMapping("use/delete/{id}") // change name
 	public String deleteUser(@PathVariable int id) {
 		userRepo.deleteById(id);
 		return "delete success";
