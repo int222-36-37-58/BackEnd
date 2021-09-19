@@ -94,9 +94,10 @@ public class ProductsRestController {
 		return "Delete Success";
 	};
 
-//	@PutMapping("/products/put/{id}")
-//	public Product put(@RequestPart Product product, @PathVariable int id,
-//			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+	@PutMapping("/products/put/{id}")
+	public Product put(@RequestBody Product product,@PathVariable int id) {
+//		@RequestPart Product product, @PathVariable int id,
+//		@RequestParam(value = "imageFile", required = false) MultipartFile imageFile
 //		if (productsJpaRepository.findById(id).isEmpty()) {
 //			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
 //					"id: {" + id + "} Does not fine Id!!");
@@ -106,16 +107,16 @@ public class ProductsRestController {
 //			throw new AllException(ExceptionResponse.ERROR_CODE.DUPICATE_IN_PRODUCTS,
 //					"Name: {" + product.getName() + "} dupicate!!");
 //		}
-//		Optional<Product> optional = productsJpaRepository.findById(id);
-//		if (optional.isPresent()) {
-//			Product existedProduct = optional.get();
-//			Product existedProduct2 = optional.get();
-//			existedProduct.setName(product.getName());
-//			existedProduct.setDescription(product.getDescription());
-//			existedProduct.setPrice(product.getPrice());
-//			existedProduct.setManufactureDate(product.getManufactureDate());
-//			existedProduct.setType(product.getType());
-//			existedProduct.setColor(product.getColor());
+		Optional<Product> optional = productsJpaRepository.findById(id);
+		if (optional.isPresent()) {
+			Product existedProduct = optional.get();
+			Product existedProduct2 = optional.get();
+			existedProduct.setName(product.getName());
+			existedProduct.setDescription(product.getDescription());
+			existedProduct.setPrice(product.getPrice());
+			existedProduct.setQuantity(product.getQuantity());
+			existedProduct.setType(product.getType());
+			existedProduct.setColor(product.getColor());
 //			if (imageFile != null) {
 //				try {
 //					ES.deleteImage(existedProduct2.getImageName());
@@ -133,10 +134,10 @@ public class ProductsRestController {
 //					System.out.println("put error");
 //				}
 //			}
-//			return productsJpaRepository.save(existedProduct);
-//		}
-//		return null;
-//	};
+			return productsJpaRepository.save(existedProduct);
+		} else 
+		return null;
+	};
 
 	@GetMapping("/products/page")
 	public List<Product> productWithPage(@RequestParam(defaultValue = "0") Integer pageNo,

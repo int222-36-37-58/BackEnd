@@ -49,7 +49,7 @@ public class OrderRestController {
 		orderDetail.setUserOrder(uo);
 		orderDetailRepo.save(orderDetail);
 		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
-		q = p.getQuantity()-od.get(i).getProduct().getQuantity();
+		q = p.getQuantity()-od.get(i).getQuantity();
 	if (q < 0 ) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
 				"id: {" + "wait to write exception" + "} Does not fine Id!!");
