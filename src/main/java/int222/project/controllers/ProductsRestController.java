@@ -49,59 +49,59 @@ public class ProductsRestController {
 	};
 
 	@PostMapping("/products/add")
-	public Product post(@RequestBody Product product) {
-//		@RequestParam("imageFile") MultipartFile imageFile,@RequestPart Product product
-//		if (productsJpaRepository.existsById(product.getProductId())) {
-//			throw new AllException(ExceptionResponse.ERROR_CODE.PRODUCT_ALREADY_EXIST,
-//					"id: {" + product.getProductId() + "} already exist !!");
-//		}
+	public Product post(@RequestParam("imageFile") MultipartFile imageFile,@RequestPart Product product) {
+
+		if (productsJpaRepository.existsById(product.getProductId())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.PRODUCT_ALREADY_EXIST,
+					"id: {" + product.getProductId() + "} already exist !!");
+		}
 //		if (productsJpaRepository.findByName(product.getName()) != null) {
 //			throw new AllException(ExceptionResponse.ERROR_CODE.DUPICATE_IN_PRODUCTS,
 //					"Name: {" + product.getName() + "} dupicate!!");
 //		}
-//		if (imageFile.getContentType().equals("image/png")) {
-//			product.setImageName(ES.randomString(3)+product.getName() + ".png");
-//		} else if (imageFile.getContentType().equals("image/jpeg")) {
-//			product.setImageName(ES.randomString(3)+product.getName() + ".jpg");
-//		} else {
-//			throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_UPLOAD_THIS_FILETYPE,
-//					"can upload png and jpg only");
-//		}
+		if (imageFile.getContentType().equals("image/png")) {
+			product.setImageName(ES.randomString(3)+product.getName() + ".png");
+		} else if (imageFile.getContentType().equals("image/jpeg")) {
+			product.setImageName(ES.randomString(3)+product.getName() + ".jpg");
+		} else {
+			throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_UPLOAD_THIS_FILETYPE,
+					"can upload png and jpg only");
+		}
 		productsJpaRepository.save(product);
-//		try {
-//			ES.saveImage(imageFile, product.getImageName());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		try {
+			ES.saveImage(imageFile, product.getImageName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return product;
 	};
 
 	@DeleteMapping("/products/{id}")
 	public String delete(@PathVariable int id) {
-//		Product product = productsJpaRepository.findById(id).get();
-//		if (product == null) {
-//			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
-//					"id: {" + id + "} Does not fine Id!!");
-//		}
+		Product product = productsJpaRepository.findById(id).get();
+		if (product == null) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
+					"id: {" + id + "} Does not fine Id!!");
+		}
 		productsJpaRepository.deleteById(id);
-//		try {
-//			ES.deleteImage(product.getImageName());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.out.println("delete error");
-//		}
+		try {
+			ES.deleteImage(product.getImageName());
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("delete error");
+		}
 
 		return "Delete Success";
 	};
 
 	@PutMapping("/products/put/{id}")
-	public Product put(@RequestBody Product product,@PathVariable int id) {
-//		@RequestPart Product product, @PathVariable int id,
-//		@RequestParam(value = "imageFile", required = false) MultipartFile imageFile
-//		if (productsJpaRepository.findById(id).isEmpty()) {
-//			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
-//					"id: {" + id + "} Does not fine Id!!");
-//		}
+	public Product put(		@RequestPart Product product, @PathVariable int id,
+			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+
+		if (productsJpaRepository.findById(id).isEmpty()) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
+					"id: {" + id + "} Does not fine Id!!");
+		}
 //		if (productsJpaRepository.findByName(product.getName()) != null
 //				&& productsJpaRepository.findByName(product.getName()).getProductId() != product.getProductId()) {
 //			throw new AllException(ExceptionResponse.ERROR_CODE.DUPICATE_IN_PRODUCTS,
@@ -117,23 +117,23 @@ public class ProductsRestController {
 			existedProduct.setQuantity(product.getQuantity());
 			existedProduct.setType(product.getType());
 			existedProduct.setColor(product.getColor());
-//			if (imageFile != null) {
-//				try {
-//					ES.deleteImage(existedProduct2.getImageName());
-//					if (imageFile.getContentType().equals("image/png")) {
-//						existedProduct.setImageName(ES.randomString(3)+product.getName() + ".png");
-//					} else if (imageFile.getContentType().equals("image/jpeg")) {
-//						existedProduct.setImageName(ES.randomString(3)+product.getName() + ".jpg");
-//					} else {
-//						throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_UPLOAD_THIS_FILETYPE,
-//								"can upload png and jpg only");
-//					}
-//					ES.saveImage(imageFile, existedProduct.getImageName());
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//					System.out.println("put error");
-//				}
-//			}
+			if (imageFile != null) {
+				try {
+					ES.deleteImage(existedProduct2.getImageName());
+					if (imageFile.getContentType().equals("image/png")) {
+						existedProduct.setImageName(ES.randomString(3)+product.getName() + ".png");
+					} else if (imageFile.getContentType().equals("image/jpeg")) {
+						existedProduct.setImageName(ES.randomString(3)+product.getName() + ".jpg");
+					} else {
+						throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_UPLOAD_THIS_FILETYPE,
+								"can upload png and jpg only");
+					}
+					ES.saveImage(imageFile, existedProduct.getImageName());
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("put error");
+				}
+			}
 			return productsJpaRepository.save(existedProduct);
 		} else 
 		return null;
