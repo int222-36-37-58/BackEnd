@@ -21,7 +21,7 @@ public class User {
 	private String userName;
 	private String password;
 	private String address;
-	private int tel;
+	private String tel;
 	private String fullName;
 	private String role;
 	
@@ -66,11 +66,11 @@ public class User {
 		this.address = address;
 	}
 
-	public int getTel() {
+	public String getTel() {
 		return tel;
 	}
 
-	public void setTel(int tel) {
+	public void setTel(String tel) {
 		this.tel = tel;
 	}
 
