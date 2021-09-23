@@ -1,6 +1,5 @@
 pipeline {
     agent any
-    
     stages {
       
         stage('stop and remove container, image') {
@@ -17,10 +16,11 @@ pipeline {
                         echo 'Skip this stage '
                     }
                 }
+            }
         }
       
         stage('remove whole data') {
-            steps {       
+            steps {   
                 sh 'rm -rf *'
             }
         }
@@ -29,7 +29,7 @@ pipeline {
             steps {       
                 git branch: 'master',
                     credentialsId: 'punthanatGit',
-                    url: 'https://github.com/int222-36-37-58/BackEnd.git'
+                    url: 'https://github.com/int222-36-37-58/backend.git'
             }
         }  
         
