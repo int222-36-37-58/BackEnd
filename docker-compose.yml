@@ -11,7 +11,7 @@ services:
       - MYSQL_USER= admin
       - MYSQL_ROOT_PASSWORD= admin
     volumes:
-      - ~/backend_data:/public/product-images
+      - /home/banjo222/backend_data:/public/product-images
     networks:
        docker_network:
           ipv4_address: 172.22.0.4
