@@ -27,7 +27,7 @@ public class UserOrder {
 	private Date date;
 	
 	@OneToMany(orphanRemoval = true, mappedBy = "userOrder")
-	private List<OrderDetail> orderDetails ;
+	private List<OrderDetail> orderDetail ;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "userId", nullable = false)
@@ -49,12 +49,12 @@ public class UserOrder {
 		this.date = date;
 	}
 
-	public List<OrderDetail> getOrderDetails() {
-		return orderDetails;
+	public List<OrderDetail> getOrderDetail() {
+		return orderDetail;
 	}
 
-	public void setOrderDetails(List<OrderDetail> orderDetails) {
-		this.orderDetails = orderDetails;
+	public void setOrderDetails(List<OrderDetail> orderDetail) {
+		this.orderDetail = orderDetail;
 	}
 
 	public User getUser() {

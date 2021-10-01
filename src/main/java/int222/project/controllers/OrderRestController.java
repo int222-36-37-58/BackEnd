@@ -40,7 +40,7 @@ public class OrderRestController {
 	}
 	@PostMapping("/addorder")
 	public UserOrder addOrder(@RequestBody UserOrder order) {
-	List<OrderDetail> od =order.getOrderDetails();
+	List<OrderDetail> od =order.getOrderDetail();
 	int q = 0;
 	Product p;
 	UserOrder uo= orderRepo.save(order);
