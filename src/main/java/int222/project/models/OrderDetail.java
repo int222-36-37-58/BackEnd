@@ -22,15 +22,15 @@ public class OrderDetail {
 	private int totalPrice;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "userOrderid", nullable = false)
+	@JoinColumn(name = "userOrderId", nullable = false)
 	private UserOrder userOrder;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "colorid", nullable = false)
+	@JoinColumn(name = "colorId", nullable = false)
 	private Color color;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "productid", nullable = false)
+	@JoinColumn(name = "productId", nullable = false)
 	private Product product;
 
 	public int getOrderDetailId() {

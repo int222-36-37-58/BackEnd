@@ -37,11 +37,11 @@ public class Product {
 	private List<Color> color;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "typeid", nullable = false)
+	@JoinColumn(name = "typeId", nullable = false)
 	private Type type;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "userid", nullable = false)
+	@JoinColumn(name = "userId", nullable = false)
 	private User user;
 
 	@OneToMany(mappedBy = "product")

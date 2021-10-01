@@ -30,7 +30,7 @@ public class UserOrder {
 	private List<OrderDetail> orderDetails ;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "userid", nullable = false)
+	@JoinColumn(name = "userId", nullable = false)
 	private User user;
 
 	public int getUserOrderId() {
