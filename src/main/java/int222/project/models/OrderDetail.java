@@ -20,8 +20,9 @@ public class OrderDetail {
 	private int orderDetailId;
 	private int quantity;
 	private int totalPrice;
+
+//	@JsonIgnoreProperties
 	
-	@JsonIgnoreProperties
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "userOrderId", nullable = false)
 	private UserOrder userOrder;
