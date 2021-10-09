@@ -37,8 +37,9 @@ public class CommentRestController {
 	@PostMapping("/addcomment")
 	public Comment addCommment(@RequestBody Comment comment) {
 //		comment.setProduct(productRepo.findById(id).get());
-		comment.setUser(userRepo.findById(comment.getUser().getUserId()).get());
+		comment.setUser(userRepo.findById(1).get());
 		return commentJpaRepository.save(comment);
+		
 	}
 	@PutMapping("/editcomment")
 	public Comment editComment(@RequestBody Comment comment) {

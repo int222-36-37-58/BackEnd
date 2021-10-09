@@ -21,8 +21,9 @@ import int222.project.exceptions.AllException;
 import int222.project.exceptions.ExceptionResponse;
 import int222.project.models.ExtendService;
 import int222.project.models.Product;
-
+import int222.project.models.Type;
 import int222.project.repositories.ProductsJpaRepository;
+import int222.project.repositories.TypeJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,8 @@ import java.util.Optional;
 public class ProductsRestController {
 	@Autowired
 	ProductsJpaRepository productsJpaRepository;
+	@Autowired
+	TypeJpaRepository typeRepo;
 	@Autowired
 	ExtendService ES;
 
@@ -146,4 +149,28 @@ public class ProductsRestController {
 		Page<Product> pageResult = productsJpaRepository.findAll(pageable);
 		return pageResult.getContent();
 	}
+	
+	@GetMapping("/products/search")
+	public List<Product> searchProduct(@RequestParam(required = false) String searchText,@RequestParam(required = false) String type,
+			@RequestParam(defaultValue = "4") Integer pageSize,@RequestParam(defaultValue = "0") Integer pageNo){
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		Page<Product> pageResult = null; 
+		Type t = typeRepo.findByName(type);
+		if(type == null && searchText != null){
+		pageResult = productsJpaRepository.searchByNameLike(searchText,pageable);
+		} 
+		else 
+		if(searchText == null && type != null) {
+			pageResult =  productsJpaRepository.findByType(t,pageable);
+		}else 
+		if(searchText != null && type !=null) {
+			pageResult = productsJpaRepository.searchByNameLikeAndFilter(searchText, t ,pageable);
+			
+		}else throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_UPLOAD_THIS_FILETYPE,
+				"can upload png and jpg only");
+		
+		return pageResult.getContent();
+		
+	}
+	
 }
