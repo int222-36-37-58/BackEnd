@@ -32,7 +32,7 @@ public class CommentRestController {
 		return commentJpaRepository.findAll();
 	}
 
-	@GetMapping("/user/{productId}/comment")
+	@GetMapping("product/{productId}/comment")
 	public List<Comment> getComment(@PathVariable int productId) {
 		return commentJpaRepository.findByProduct(productRepo.findById(productId).get());
 		// page and null attribute of user left
