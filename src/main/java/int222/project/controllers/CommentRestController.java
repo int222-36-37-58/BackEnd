@@ -3,6 +3,7 @@ package int222.project.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import int222.project.exceptions.AllException;
+import int222.project.exceptions.ExceptionResponse;
 import int222.project.models.Comment;
 import int222.project.repositories.CommentJpaRepository;
 import int222.project.repositories.ProductsJpaRepository;
@@ -29,19 +32,22 @@ public class CommentRestController {
 		return commentJpaRepository.findAll();
 	}
 
-	@GetMapping("/{productId}/comment")
+	@GetMapping("/user/{productId}/comment")
 	public List<Comment> getComment(@PathVariable int productId) {
 		return commentJpaRepository.findByProduct(productRepo.findById(productId).get());
 		// page and null attribute of user left
 	}
-	@PostMapping("/addcomment")
-	public Comment addCommment(@RequestBody Comment comment) {
+	@PostMapping("/user/addcomment")
+	public Comment addCommment(@RequestBody Comment comment,Authentication authen) {
 //		comment.setProduct(productRepo.findById(id).get());
-		comment.setUser(userRepo.findById(1).get());
+		if(comment.getUser().getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your comment" );
+		}
+//		comment.setUser(userRepo.findById().get());
 		return commentJpaRepository.save(comment);
 		
 	}
-	@PutMapping("/editcomment")
+	@PutMapping("/user/editcomment")
 	public Comment editComment(@RequestBody Comment comment) {
 		Comment c = commentJpaRepository.findById(comment.getCommentId()).get();
 		c.setContent(comment.getContent());
@@ -49,7 +55,7 @@ public class CommentRestController {
 		c.setUser(comment.getUser());
 		return commentJpaRepository.save(c);
 	}
-	@DeleteMapping("/commentdelete/{id}")
+	@DeleteMapping("/user/commentdelete/{id}")
 	public String deleteComment(@PathVariable int id) {
 		commentJpaRepository.deleteById(id);
 		return "delete success";

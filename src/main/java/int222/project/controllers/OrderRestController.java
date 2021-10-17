@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import int222.project.exceptions.AllException;
 import int222.project.exceptions.ExceptionResponse;
 import int222.project.models.OrderDetail;
 import int222.project.models.Product;
+import int222.project.models.User;
 import int222.project.models.UserOrder;
 import int222.project.repositories.UserOrderJpaRepository;
 import int222.project.repositories.OrderDetailRepository;
@@ -34,16 +36,25 @@ public class OrderRestController {
 	public List<UserOrder> getAllOrder() {
 		return orderRepo.findAll();
 	}
-	@GetMapping("/getuserorder/{id}")
-	public List<UserOrder> getUserOrder(@PathVariable int id){
-		return orderRepo.findByUser(userRepo.findById(id).get());
+	@GetMapping("/user/getuserorder/{id}")
+	public List<UserOrder> getUserOrder(@PathVariable int id,Authentication authen){
+		User user= userRepo.findById(id).get();
+		if(!user.getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please get your order" );
+			
+		}
+		
+		return orderRepo.findByUser(user);
 	}
-	@PostMapping("/addorder")
-	public UserOrder addOrder(@RequestBody UserOrder order) {
+	@PostMapping("/user/addorder")
+	public UserOrder addOrder(@RequestBody UserOrder order,Authentication authen) {
 	List<OrderDetail> od =order.getOrderDetail();
 	int q = 0;
 	Product p;
 	UserOrder uo= orderRepo.save(order);
+	if(!uo.getUser().getUserName().equals(authen.getName())) {
+		throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your order" );
+	}
 	for (int i = 0; i < od.size(); i++) {
 		OrderDetail orderDetail= od.get(i);
 		orderDetail.setUserOrder(uo);
@@ -51,8 +62,8 @@ public class OrderRestController {
 		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
 		q = p.getQuantity()-od.get(i).getQuantity();
 	if (q < 0 ) {
-		throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
-				"id: {" + "wait to write exception" + "} Does not fine Id!!");
+		throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
+				p.getName()+"quantity is zero please wait to fill this product");
 	} else	 p.setQuantity(q);
 		productRepo.save(p);
 	}

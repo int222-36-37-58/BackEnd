@@ -3,6 +3,7 @@ package int222.project.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,10 @@ public class UserController {
 	public String deleteUser(@PathVariable int id) {
 		userRepo.deleteById(id);
 		return "delete success";
+	}
+	@GetMapping("user/thisuser")
+	public String currentUser(Authentication authen) {
+		return authen.getName();
 	}
 //	@Transactional
 //	public UserDetails loadUserBysUserName(String username) throws UsernameNotFoundException {

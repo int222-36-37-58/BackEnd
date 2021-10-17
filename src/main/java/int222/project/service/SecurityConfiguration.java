@@ -29,8 +29,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/user/**").hasAnyRole("USER","ADMIN")
 				.antMatchers("/").permitAll()
-				.and().formLogin().and()
-				.csrf().disable();
+				.and()
+				.formLogin()
+				.loginPage("/login")
+				.and()
+				.logout()
+				.and()
+				.csrf().disable()
+				;
 	}
 	@Bean
 	public PasswordEncoder gePasswordEncoder() {
