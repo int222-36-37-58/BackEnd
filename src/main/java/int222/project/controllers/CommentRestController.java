@@ -40,7 +40,7 @@ public class CommentRestController {
 	@PostMapping("/user/addcomment")
 	public Comment addCommment(@RequestBody Comment comment,Authentication authen) {
 //		comment.setProduct(productRepo.findById(id).get());
-		if(comment.getUser().getUserName().equals(authen.getName())) {
+		if(!comment.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your comment" );
 		}
 //		comment.setUser(userRepo.findById().get());
@@ -48,7 +48,10 @@ public class CommentRestController {
 		
 	}
 	@PutMapping("/user/editcomment")
-	public Comment editComment(@RequestBody Comment comment) {
+	public Comment editComment(@RequestBody Comment comment,Authentication authen) {
+		if(!comment.getUser().getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please put your comment" );
+		}
 		Comment c = commentJpaRepository.findById(comment.getCommentId()).get();
 		c.setContent(comment.getContent());
 		c.setProduct(comment.getProduct());
@@ -56,7 +59,11 @@ public class CommentRestController {
 		return commentJpaRepository.save(c);
 	}
 	@DeleteMapping("/user/commentdelete/{id}")
-	public String deleteComment(@PathVariable int id) {
+	public String deleteComment(@PathVariable int id,Authentication authen) {
+		Comment comment = commentJpaRepository.findById(id).get();
+		if(!comment.getUser().getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please delete  your comment" );
+		}
 		commentJpaRepository.deleteById(id);
 		return "delete success";
 	}

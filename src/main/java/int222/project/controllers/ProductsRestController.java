@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +22,10 @@ import int222.project.exceptions.ExceptionResponse;
 import int222.project.models.ExtendService;
 import int222.project.models.Product;
 import int222.project.models.Type;
+import int222.project.models.User;
 import int222.project.repositories.ProductsJpaRepository;
 import int222.project.repositories.TypeJpaRepository;
+import int222.project.repositories.UserJpaRepositories;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +36,8 @@ public class ProductsRestController {
 	ProductsJpaRepository productsJpaRepository;
 	@Autowired
 	TypeJpaRepository typeRepo;
+	@Autowired
+	UserJpaRepositories userRepo;
 	@Autowired
 	ExtendService ES;
 
@@ -51,9 +55,13 @@ public class ProductsRestController {
 		return productsJpaRepository.findById(id).orElse(null);
 	};
 
-	@PostMapping("/products/add")
-	public Product post(@RequestParam("imageFile") MultipartFile imageFile,@RequestPart Product product) {
-
+	@PostMapping("user/products/add")
+	public Product post(@RequestParam("imageFile") MultipartFile imageFile,@RequestPart Product product,Authentication authen) {
+		
+		
+		if(!product.getUser().getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your product" );
+		}
 		if (productsJpaRepository.existsById(product.getProductId())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.PRODUCT_ALREADY_EXIST,
 					"id: {" + product.getProductId() + "} already exist !!");
@@ -79,13 +87,16 @@ public class ProductsRestController {
 		return product;
 	};
 
-	@DeleteMapping("/products/{id}")
-	public String delete(@PathVariable int id) {
+	@DeleteMapping("user/products/{id}")
+	public String delete(@PathVariable int id,Authentication authen) {
 		Product product = productsJpaRepository.findById(id).get();
-		if (product == null) {
-			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
-					"id: {" + id + "} Does not fine Id!!");
+		if(!product.getUser().getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please delete your product" );
 		}
+//		if (product == null) {
+//			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
+//					"id: {" + id + "} Does not fine Id!!");
+//		}
 		productsJpaRepository.deleteById(id);
 		try {
 			ES.deleteImage(product.getImageName());
@@ -97,10 +108,12 @@ public class ProductsRestController {
 		return "Delete Success";
 	};
 
-	@PutMapping("/products/put/{id}")
+	@PutMapping("user/products/put/{id}")
 	public Product put(		@RequestPart Product product, @PathVariable int id,
-			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
-
+			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile,Authentication authen) {
+		if(!product.getUser().getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please put your product" );
+		}
 		if (productsJpaRepository.findById(id).isEmpty()) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
 					"id: {" + id + "} Does not fine Id!!");
@@ -172,5 +185,9 @@ public class ProductsRestController {
 		return pageResult.getContent();
 		
 	}
-	
+	@GetMapping("/products/sellerproduct/{name}")
+	public List<Product> getSellerProduct(@PathVariable String name){
+		User seller = userRepo.findByUserName(name).get();
+		return productsJpaRepository.findByUser(seller);
+	}
 }

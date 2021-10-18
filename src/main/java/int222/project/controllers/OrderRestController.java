@@ -69,5 +69,14 @@ public class OrderRestController {
 	}
 		return orderRepo.findById(uo.getUserOrderId()).get();
 	}
-	
+	@GetMapping("/seller/order/{seller}")
+	public List<OrderDetail> getSellerOrder(@PathVariable String seller){
+		User u = userRepo.findByUserName(seller).get();
+		List<Product> p = productRepo.findByUser(u);
+		List<OrderDetail> od = null;
+		for (int i = 0; i < p.size(); i++) {
+		od.addAll(	orderDetailRepo.findByProduct(p.get(i)) );
+		}
+		return od;
+	}
 }

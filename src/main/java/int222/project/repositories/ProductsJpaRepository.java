@@ -10,8 +10,10 @@ import org.springframework.data.repository.query.Param;
 
 import int222.project.models.Product;
 import int222.project.models.Type;
+import int222.project.models.User;
 
 public interface ProductsJpaRepository extends JpaRepository<Product, Integer> {
+	List<Product> findByUser(User user);
 	Product findByName(String name);
 	@Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
 	Page<Product> searchByNameLike(@Param("name") String name ,Pageable pageable); 
