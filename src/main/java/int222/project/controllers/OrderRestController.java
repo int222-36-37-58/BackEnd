@@ -32,7 +32,7 @@ public class OrderRestController {
 	ProductsJpaRepository productRepo;
 	@Autowired
 	OrderDetailRepository orderDetailRepo;
-	@GetMapping("/getallorder")
+	@GetMapping("/admin/getallorder")
 	public List<UserOrder> getAllOrder() {
 		return orderRepo.findAll();
 	}
