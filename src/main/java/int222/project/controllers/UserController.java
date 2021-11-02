@@ -25,14 +25,14 @@ public class UserController {
 	@Autowired
 	UserJpaRepositories userRepo;
 
-	@GetMapping("/users")
+	@GetMapping("/admin/users")
 	public List<User> getAllUser() {
 		return userRepo.findAll();
 	};
 
-	@GetMapping("/user/{id}")
-	public User getAllUser(@PathVariable int id) {
-		return userRepo.findById(id).get();
+	@GetMapping("/user/getbyname}")
+	public User getAllUser(@PathVariable int id,Authentication authen) {
+		return userRepo.findByUserName(authen.getName()).get();
 	};
 
 	@PostMapping("/register")
@@ -40,7 +40,7 @@ public class UserController {
 		return userRepo.save(user);
 	}
 
-	@PutMapping("/edituser")
+	@PutMapping("/user/edituser")
 	public User editUser(@RequestBody User user) {
 		User userOld = userRepo.findById(user.getUserId()).get();
 		userOld.setUserName(user.getUserName());
@@ -52,7 +52,7 @@ public class UserController {
 		return userRepo.save(userOld);
 	}
 
-	@DeleteMapping("use/delete/{id}") // change name
+	@DeleteMapping("/delete/{id}") // change name
 	public String deleteUser(@PathVariable int id) {
 		userRepo.deleteById(id);
 		return "delete success";
