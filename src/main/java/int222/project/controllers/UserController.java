@@ -30,8 +30,8 @@ public class UserController {
 		return userRepo.findAll();
 	};
 
-	@GetMapping("/user/getbyname}")
-	public User getAllUser(@PathVariable int id,Authentication authen) {
+	@GetMapping("/user/getbyname")
+	public User getAllUser(Authentication authen) {
 		return userRepo.findByUserName(authen.getName()).get();
 	};
 
