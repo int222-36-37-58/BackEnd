@@ -49,7 +49,7 @@ public class UserController {
 	}
 
 	@PutMapping("/user/edituser")//   b crypt checkด้วย
-	public User editUser(@RequestPart User user,@RequestParam String oldPassword,Authentication authen) {
+	public User editUser(@RequestBody User user,Authentication authen) {
 		User userOld = userRepo.findById(user.getUserId()).get();
 		
 		if(!user.getUserName().equals(authen.getName())) {
@@ -59,17 +59,31 @@ public class UserController {
 			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
 					"this name:" + user.getUserName() + " has been use. pls change user name!!");
 		}
-		if(!userOld.getPassword().equals(oldPassword)) {//ใช้เป็น b crypt check
-			throw new AllException(ExceptionResponse.ERROR_CODE.PASSWORD_NOT_MATCH,
-					"this password is not match pls enter u old password!!");
-		}
+//		if(!userOld.getPassword().equals(oldPassword)) {//ใช้เป็น b crypt check
+//			throw new AllException(ExceptionResponse.ERROR_CODE.PASSWORD_NOT_MATCH,
+//					"this password is not match pls enter u old password!!");
+//		}
 		userOld.setUserName(user.getUserName());
-		userOld.setPassword(user.getPassword());
+//		userOld.setPassword(user.getPassword());
 		userOld.setAddress(user.getAddress());
 		userOld.setTel(user.getTel());
 		userOld.setFullName(user.getFullName());
 		userOld.setRole(user.getRole());
 		return userRepo.save(userOld);
+	}
+	
+	// password change 
+	@PutMapping("/user/changepassword")
+	public String changePass(@RequestParam String newPassword,@RequestParam String oldPassword,Authentication authen) {
+		User user = userRepo.findByUserName(authen.getName()).get();
+
+		if(!user.getPassword().equals(oldPassword)) {//ใช้เป็น b crypt check
+			throw new AllException(ExceptionResponse.ERROR_CODE.PASSWORD_NOT_MATCH,
+					"this password is not match pls enter u old password!!");
+		}
+		user.setPassword(newPassword);
+		userRepo.save(user);
+		return "change success";
 	}
 
 	//promote role 
@@ -89,8 +103,21 @@ public class UserController {
 		userRepo.save(user);
 		return user.getUserName()+" has been change role to "+role;
 	}
+
 	
-	
+	// promote user 
+	@PutMapping("/user/promotTo")
+	public String promoteUserTo(Authentication authen,@RequestParam String role) {
+		if(!( role.equals("user") || role.equals("seller"))) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.ROLE_NOT_MATCH,
+					"our website dont has this "+role+" role");
+		}
+		Optional<User> usero = userRepo.findByUserName(authen.getName());
+		User user = usero.get();
+		user.setRole("ROLE_"+role.toUpperCase());
+		userRepo.save(user);
+		return user.getUserName()+" has been change role to "+role;
+	}
 	@DeleteMapping("/delete/{id}") // change name
 	public String deleteUser(@PathVariable int id) {
 		userRepo.deleteById(id);

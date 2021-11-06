@@ -36,13 +36,13 @@ public class OrderRestController {
 	public List<UserOrder> getAllOrder() {
 		return orderRepo.findAll();
 	}
-	@GetMapping("/user/getuserorder/{id}")
-	public List<UserOrder> getUserOrder(@PathVariable int id,Authentication authen){
-		User user= userRepo.findById(id).get();
-		if(!user.getUserName().equals(authen.getName())) {
-			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please get your order" );
-			
-		}
+	@GetMapping("/user/getuserorder")
+	public List<UserOrder> getUserOrder(Authentication authen){
+		User user= userRepo.findByUserName(authen.getName()).get();
+//		if(!user.getUserName().equals(authen.getName())) {
+//			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please get your order" );
+//			
+//		}
 		
 		return orderRepo.findByUser(user);
 	}
