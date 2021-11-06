@@ -1,6 +1,7 @@
 package int222.project.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
+import int222.project.exceptions.AllException;
+import int222.project.exceptions.ExceptionResponse;
 import int222.project.models.User;
 import int222.project.repositories.UserJpaRepositories;
 
@@ -37,12 +41,28 @@ public class UserController {
 
 	@PostMapping("/register")
 	public User postUser(@RequestBody User user) {// orrequestBody
+		if(userRepo.findByUserName(user.getUserName())!= null){
+			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
+					"this name:" + user.getUserName() + " has been use pls change user name!!");
+		}
 		return userRepo.save(user);
 	}
 
-	@PutMapping("/user/edituser")
-	public User editUser(@RequestBody User user) {
+	@PutMapping("/user/edituser")//   b crypt checkด้วย
+	public User editUser(@RequestPart User user,@RequestParam String oldPassword,Authentication authen) {
 		User userOld = userRepo.findById(user.getUserId()).get();
+		
+		if(!user.getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please edit your account only" );
+		}
+		if(user.getUserName() != userOld.getUserName() &&userRepo.findByUserName(user.getUserName())!= null){
+			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
+					"this name:" + user.getUserName() + " has been use. pls change user name!!");
+		}
+		if(!userOld.getPassword().equals(oldPassword)) {//ใช้เป็น b crypt check
+			throw new AllException(ExceptionResponse.ERROR_CODE.PASSWORD_NOT_MATCH,
+					"this password is not match pls enter u old password!!");
+		}
 		userOld.setUserName(user.getUserName());
 		userOld.setPassword(user.getPassword());
 		userOld.setAddress(user.getAddress());
@@ -52,6 +72,25 @@ public class UserController {
 		return userRepo.save(userOld);
 	}
 
+	//promote role 
+	@PutMapping("/admin/promoteuser/{id}")
+	public String promoteUser(@PathVariable int id,@RequestParam String role) {
+		Optional<User> usero = userRepo.findById(id);
+		if (usero.isEmpty()) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
+					"id: {" + id + "} Does not fine Id!!");
+		}
+		if(!(role.equals("admin") || role.equals("user") || role.equals("seller"))) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.ROLE_NOT_MATCH,
+					"our website dont has this "+role+" role");
+		}
+		User user = usero.get();
+		user.setRole("ROLE_"+role.toUpperCase());
+		userRepo.save(user);
+		return user.getUserName()+" has been change role to "+role;
+	}
+	
+	
 	@DeleteMapping("/delete/{id}") // change name
 	public String deleteUser(@PathVariable int id) {
 		userRepo.deleteById(id);
