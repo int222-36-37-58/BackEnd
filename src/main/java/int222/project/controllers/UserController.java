@@ -123,7 +123,7 @@ public class UserController {
 		userRepo.deleteById(id);
 		return "delete success";
 	}
-	@GetMapping("user/thisuser")
+	@GetMapping("/user/thisuser")
 	public String currentUser(Authentication authen) {
 		return authen.getName();
 	}

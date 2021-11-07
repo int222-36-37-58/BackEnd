@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import int222.project.config.JwtTokenUtil;
+import int222.project.exceptions.AllException;
+import int222.project.exceptions.ExceptionResponse;
 import int222.project.models.JwtRequest;
 import int222.project.models.JwtResponse;
 import int222.project.service.MyUserDetailsService;
@@ -53,7 +55,8 @@ public class JwtAuthenticationController {
 		} catch (DisabledException e) {
 			throw new Exception("USER_DISABLED", e);
 		} catch (BadCredentialsException e) {
-			throw new Exception("INVALID_CREDENTIALS", e);
+			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_PASSWORD_INVALID,
+					"wrong username or password");
 		}
 	}
 }

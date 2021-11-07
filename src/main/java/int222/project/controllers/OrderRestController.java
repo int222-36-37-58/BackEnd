@@ -1,5 +1,6 @@
 package int222.project.controllers;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,10 +52,10 @@ public class OrderRestController {
 	List<OrderDetail> od =order.getOrderDetail();
 	int q = 0;
 	Product p;
-	UserOrder uo= orderRepo.save(order);
-	if(!uo.getUser().getUserName().equals(authen.getName())) {
+	if(!order.getUser().getUserName().equals(authen.getName())) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your order" );
 	}
+	UserOrder uo= orderRepo.save(order);
 	for (int i = 0; i < od.size(); i++) {
 		OrderDetail orderDetail= od.get(i);
 		orderDetail.setUserOrder(uo);
@@ -69,11 +70,11 @@ public class OrderRestController {
 	}
 		return orderRepo.findById(uo.getUserOrderId()).get();
 	}
-	@GetMapping("/seller/order/{seller}")
-	public List<OrderDetail> getSellerOrder(@PathVariable String seller){
-		User u = userRepo.findByUserName(seller).get();
+	@GetMapping("/seller/order")
+	public List<OrderDetail> getSellerOrder(Authentication authen){
+		User u = userRepo.findByUserName(authen.getName()).get();
 		List<Product> p = productRepo.findByUser(u);
-		List<OrderDetail> od = null;
+		List<OrderDetail> od = new ArrayList<OrderDetail>() ;
 		for (int i = 0; i < p.size(); i++) {
 		od.addAll(	orderDetailRepo.findByProduct(p.get(i)) );
 		}
