@@ -5,11 +5,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import int222.project.exceptions.AllException;
@@ -37,15 +43,20 @@ public class OrderRestController {
 	public List<UserOrder> getAllOrder() {
 		return orderRepo.findAll();
 	}
+	// ทำ page 
 	@GetMapping("/user/getuserorder")
-	public List<UserOrder> getUserOrder(Authentication authen){
+	public List<UserOrder> getUserOrder(Authentication authen,@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "date") String sortBy){
+		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 		User user= userRepo.findByUserName(authen.getName()).get();
+		
+		Page<UserOrder> pageResult = orderRepo.findByUser(user, pageable);
 //		if(!user.getUserName().equals(authen.getName())) {
 //			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please get your order" );
 //			
 //		}
 		
-		return orderRepo.findByUser(user);
+		return pageResult.getContent();
 	}
 	@PostMapping("/user/addorder")
 	public UserOrder addOrder(@RequestBody UserOrder order,Authentication authen) {
@@ -70,14 +81,20 @@ public class OrderRestController {
 	}
 		return orderRepo.findById(uo.getUserOrderId()).get();
 	}
+	// ทำ page
 	@GetMapping("/seller/order")
-	public List<OrderDetail> getSellerOrder(Authentication authen){
+	public List<OrderDetail> getSellerOrder(Authentication authen,@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "quantity") String sortBy){
 		User u = userRepo.findByUserName(authen.getName()).get();
 		List<Product> p = productRepo.findByUser(u);
 		List<OrderDetail> od = new ArrayList<OrderDetail>() ;
 		for (int i = 0; i < p.size(); i++) {
 		od.addAll(	orderDetailRepo.findByProduct(p.get(i)) );
 		}
+		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		final int start = (int)pageable.getOffset();
+		final int end = Math.min((start + pageable.getPageSize()), od.size());
+		final Page<OrderDetail> page = new PageImpl<>(od.subList(start, end), pageable, od.size());
 		return od;
 	}
 }
