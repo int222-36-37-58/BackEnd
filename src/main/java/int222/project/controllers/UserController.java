@@ -55,7 +55,7 @@ public class UserController {
 		if(!userOld.getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please edit your account only" );
 		}
-		if(user.getUserName() != userOld.getUserName() &&!userRepo.findByUserName(user.getUserName()).isEmpty()){
+		if(!user.getUserName().equals( userOld.getUserName()) &&!userRepo.findByUserName(user.getUserName()).isEmpty()){
 			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
 					"this name:" + user.getUserName() + " has been use. pls change user name!!");
 		}
@@ -127,7 +127,7 @@ public class UserController {
 	public User editUser(@RequestBody User user) {
 		User userOld = userRepo.findById(user.getUserId()).get();
 		
-		if(user.getUserName() != userOld.getUserName() &&!userRepo.findByUserName(user.getUserName()).isEmpty()){
+		if(!user.getUserName().equals( userOld.getUserName()) &&!userRepo.findByUserName(user.getUserName()).isEmpty()){
 			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
 					"this name:" + user.getUserName() + " has been use. pls change user name!!");
 		}
