@@ -52,7 +52,7 @@ public class UserController {
 	public User editUser(@RequestBody User user,Authentication authen) {
 		User userOld = userRepo.findById(user.getUserId()).get();
 		
-		if(!user.getUserName().equals(authen.getName())) {
+		if(!userOld.getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please edit your account only" );
 		}
 		if(user.getUserName() != userOld.getUserName() &&userRepo.findByUserName(user.getUserName())!= null){
@@ -118,10 +118,30 @@ public class UserController {
 		userRepo.save(user);
 		return user.getUserName()+" has been change role to "+role;
 	}
-	@DeleteMapping("/delete/{id}") // change name
+	@DeleteMapping("/admin/delete/{id}") // change name
 	public String deleteUser(@PathVariable int id) {
 		userRepo.deleteById(id);
 		return "delete success";
+	}
+	@PutMapping("/admin/edituser")//   b crypt checkด้วย
+	public User editUser(@RequestBody User user) {
+		User userOld = userRepo.findById(user.getUserId()).get();
+		
+		if(user.getUserName() != userOld.getUserName() &&userRepo.findByUserName(user.getUserName())!= null){
+			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
+					"this name:" + user.getUserName() + " has been use. pls change user name!!");
+		}
+//		if(!userOld.getPassword().equals(oldPassword)) {//ใช้เป็น b crypt check
+//			throw new AllException(ExceptionResponse.ERROR_CODE.PASSWORD_NOT_MATCH,
+//					"this password is not match pls enter u old password!!");
+//		}
+		userOld.setUserName(user.getUserName());
+		userOld.setPassword(user.getPassword());
+		userOld.setAddress(user.getAddress());
+		userOld.setTel(user.getTel());
+		userOld.setFullName(user.getFullName());
+		userOld.setRole(user.getRole());
+		return userRepo.save(userOld);
 	}
 	@GetMapping("/user/thisuser")
 	public String currentUser(Authentication authen) {
