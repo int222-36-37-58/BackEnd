@@ -64,9 +64,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/user/**")
-				.hasAnyRole("ADMIN","SELLER")
+				.hasAnyRole("USER","ADMIN","SELLER")
 				.antMatchers("/seller/**")
-				.hasAnyRole("USER", "ADMIN","SELLER")
+				.hasAnyRole("ADMIN","SELLER")
 				.antMatchers("/**").permitAll().and().
 				// make sure we use stateless session; session won't be used to
 				// store user's state.
