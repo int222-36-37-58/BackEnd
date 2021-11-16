@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,11 +46,15 @@ public class UserController {
 			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
 					"this name:" + user.getUserName() + " has been use pls change user name!!"  );
 		}
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String pw = passwordEncoder.encode(user.getPassword());
+		user.setPassword(pw);
 		return userRepo.save(user);
 	}
 
 	@PutMapping("/user/edituser")//   b crypt checkด้วย
 	public User editUser(@RequestBody User user,Authentication authen) {
+
 		User userOld = userRepo.findById(user.getUserId()).get();
 		
 		if(!userOld.getUserName().equals(authen.getName())) {
@@ -76,12 +81,13 @@ public class UserController {
 	@PutMapping("/user/changepassword")
 	public String changePass(@RequestParam String newPassword,@RequestParam String oldPassword,Authentication authen) {
 		User user = userRepo.findByUserName(authen.getName()).get();
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-		if(!user.getPassword().equals(oldPassword)) {//ใช้เป็น b crypt check
+		if(!passwordEncoder.matches(oldPassword,user.getPassword() )) {//ใช้เป็น b crypt check
 			throw new AllException(ExceptionResponse.ERROR_CODE.PASSWORD_NOT_MATCH,
 					"this password is not match pls enter u old password!!");
 		}
-		user.setPassword(newPassword);
+		user.setPassword(passwordEncoder.encode(newPassword));
 		userRepo.save(user);
 		return "change success";
 	}

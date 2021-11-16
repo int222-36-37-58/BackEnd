@@ -55,7 +55,7 @@ public class ProductsRestController {
 		return productsJpaRepository.findById(id).orElse(null);
 	};
 
-	@PostMapping("user/products/add")
+	@PostMapping("seller/products/add")
 	public Product post(@RequestParam("imageFile") MultipartFile imageFile,@RequestPart Product product,Authentication authen) {
 		
 		
@@ -87,7 +87,7 @@ public class ProductsRestController {
 		return product;
 	};
 
-	@DeleteMapping("user/products/{id}")
+	@DeleteMapping("seller/products/{id}")
 	public String delete(@PathVariable int id,Authentication authen) {
 		Product product = productsJpaRepository.findById(id).get();
 		if(!product.getUser().getUserName().equals(authen.getName())) {
@@ -108,7 +108,7 @@ public class ProductsRestController {
 		return "Delete Success";
 	};
 
-	@PutMapping("user/products/put/{id}")
+	@PutMapping("seller/products/put/{id}")
 	public Product put(		@RequestPart Product product, @PathVariable int id,
 			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile,Authentication authen) {
 		if(!product.getUser().getUserName().equals(authen.getName())) {
@@ -185,7 +185,7 @@ public class ProductsRestController {
 		return pageResult.getContent();
 		
 	}
-	@GetMapping("/products/sellerproduct/{name}")
+	@GetMapping("/seller/products/sellerproduct/{name}")
 	public List<Product> getSellerProduct(@PathVariable String name){
 		User seller = userRepo.findByUserName(name).get();
 		return productsJpaRepository.findByUser(seller);
