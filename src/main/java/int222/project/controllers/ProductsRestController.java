@@ -179,8 +179,7 @@ public class ProductsRestController {
 		if(searchText != null && type !=null) {
 			pageResult = productsJpaRepository.searchByNameLikeAndFilter(searchText, t ,pageable);
 			
-		}else throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_UPLOAD_THIS_FILETYPE,
-				"can upload png and jpg only");
+		}
 		
 		return pageResult.getContent();
 		
