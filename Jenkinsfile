@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    
+     tools {
+    	nodejs "nodejs"
+    }
+    
     stages {
       
         stage('stop and remove container, image') {
@@ -29,13 +34,29 @@ pipeline {
             steps {       
                 git branch: 'master',
                     credentialsId: 'punthanatGit',
-                    url: 'https://github.com/int222-36-37-58/backend.git'
+                    url: 'https://github.com/int222-36-37-58/BackEnd.git'
             }
         }  
         
-        stage('(deploy) start contianer') {
+        stage('deploy dev') {
             steps {
                 sh 'docker-compose up -d'
+            }
+        }
+        
+        stage('test') {
+            steps {
+                sh 'node --version '
+                sh 'npm --version '
+                sh 'npm install -g newman'
+                sh 'pwd'
+                sh 'newman run https://www.getpostman.com/collections/ad108bb37c9ad912828c'
+            }
+        }
+        
+        stage('fake deploy production') {
+            steps {
+                echo 'deployyy!!!!'
             }
         }
       
