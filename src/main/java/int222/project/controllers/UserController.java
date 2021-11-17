@@ -143,7 +143,7 @@ public class UserController {
 //					"this password is not match pls enter u old password!!");
 //		}
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		if(user.getPassword()!= null) {
+		if(user.getPassword()!= null && !passwordEncoder.matches(user.getPassword(), userOld.getPassword())) {
 		String pw = passwordEncoder.encode(user.getPassword());
 		userOld.setPassword(pw);
 		}
@@ -155,10 +155,10 @@ public class UserController {
 		userOld.setRole(user.getRole());
 		return userRepo.save(userOld);
 	}
-	@GetMapping("/user/thisuser")
-	public String currentUser(Authentication authen) {
-		return authen.getName();
-	}
+//	@GetMapping("/user/thisuser")
+//	public String currentUser(Authentication authen) {
+//		return authen.getName();
+//	}
 //	@Transactional
 //	public UserDetails loadUserBysUserName(String username) throws UsernameNotFoundException {
 //		User user = userRepo.findByUserName(username)
