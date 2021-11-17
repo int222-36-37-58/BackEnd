@@ -1,5 +1,6 @@
 package int222.project.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -141,8 +142,10 @@ public class UserController {
 //			throw new AllException(ExceptionResponse.ERROR_CODE.PASSWORD_NOT_MATCH,
 //					"this password is not match pls enter u old password!!");
 //		}
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String pw = passwordEncoder.encode(user.getPassword());
 		userOld.setUserName(user.getUserName());
-		userOld.setPassword(user.getPassword());
+		userOld.setPassword(pw);
 		userOld.setAddress(user.getAddress());
 		userOld.setTel(user.getTel());
 		userOld.setFullName(user.getFullName());
@@ -159,4 +162,16 @@ public class UserController {
 //				.orElseThrow(() -> new UsernameNotFoundException("no username ni" + username));
 //		return UserPrinciple.build(user);
 //	}
+	@GetMapping("/encryptallpassword")
+	public List<String> eA() {
+		List<User> users = userRepo.findAll();
+		List<String> list = new ArrayList<String>();
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		for (int i = 0; i < users.size(); i++) {
+			User u = users.get(i);
+			String pw = passwordEncoder.encode(u.getPassword());
+			list.add(u.getUserName()+"   "+pw);
+		}
+		return list;
+	}
 }
