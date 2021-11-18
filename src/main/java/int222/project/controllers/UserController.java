@@ -143,10 +143,10 @@ public class UserController {
 //					"this password is not match pls enter u old password!!");
 //		}
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		if(user.getPassword()!= null || !passwordEncoder.matches(user.getPassword(), userOld.getPassword())) {
+		if(user.getPassword() != null && !passwordEncoder.matches(user.getPassword(), userOld.getPassword()) && !user.getPassword().equals(userOld.getPassword()) ){
 		String pw = passwordEncoder.encode(user.getPassword());
 		userOld.setPassword(pw);
-		}
+			}
 		userOld.setUserName(user.getUserName());
 		
 		userOld.setAddress(user.getAddress());
