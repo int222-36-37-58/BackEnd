@@ -166,7 +166,7 @@ public class ProductsRestController {
 	@GetMapping("/products/search")
 	public List<Product> searchProduct(@RequestParam(required = false) String searchText,@RequestParam(required = false) String type,
 			@RequestParam(defaultValue = "4") Integer pageSize,@RequestParam(defaultValue = "0") Integer pageNo){
-		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		Pageable pageable = PageRequest.of(pageNo, pageSize,Sort.by("productId").descending());
 		Page<Product> pageResult = null; 
 		Type t = typeRepo.findByName(type);
 		if(type == null && searchText != null){
