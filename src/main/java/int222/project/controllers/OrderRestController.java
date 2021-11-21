@@ -47,7 +47,7 @@ public class OrderRestController {
 	@GetMapping("/user/getuserorder")
 	public List<UserOrder> getUserOrder(Authentication authen,@RequestParam(defaultValue = "0") Integer pageNo,
 			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "date") String sortBy){
-		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
 		User user= userRepo.findByUserName(authen.getName()).get();
 		
 		Page<UserOrder> pageResult = orderRepo.findByUser(user, pageable);
@@ -73,6 +73,9 @@ public class OrderRestController {
 		orderDetailRepo.save(orderDetail);
 		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
 		q = p.getQuantity()-od.get(i).getQuantity();
+		if(p.getUser().getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT, "cant order your product");
+		}
 	if (q < 0 ) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
 				p.getName()+"quantity is zero please wait to fill this product");
@@ -84,14 +87,14 @@ public class OrderRestController {
 	// ทำ page
 	@GetMapping("/seller/order")
 	public List<OrderDetail> getSellerOrder(Authentication authen,@RequestParam(defaultValue = "0") Integer pageNo,
-			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "quantity") String sortBy){
+			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "orderDetailId") String sortBy){
 		User u = userRepo.findByUserName(authen.getName()).get();
 		List<Product> p = productRepo.findByUser(u);
 		List<OrderDetail> od = new ArrayList<OrderDetail>() ;
 		for (int i = 0; i < p.size(); i++) {
 		od.addAll(	orderDetailRepo.findByProduct(p.get(i)) );
 		}
-		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
 		final int start = (int)pageable.getOffset();
 		final int end = Math.min((start + pageable.getPageSize()), od.size());
 		final Page<OrderDetail> page = new PageImpl<>(od.subList(start, end), pageable, od.size());

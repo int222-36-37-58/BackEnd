@@ -165,16 +165,16 @@ public class UserController {
 //				.orElseThrow(() -> new UsernameNotFoundException("no username ni" + username));
 //		return UserPrinciple.build(user);
 //	}
-	@GetMapping("/encryptallpassword")
-	public List<String> eA() {
-		List<User> users = userRepo.findAll();
-		List<String> list = new ArrayList<String>();
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		for (int i = 0; i < users.size(); i++) {
-			User u = users.get(i);
-			String pw = passwordEncoder.encode(u.getPassword());
-			list.add(u.getUserName()+"   "+pw);
-		}
-		return list;
-	}
+//	@GetMapping("/encryptallpassword")
+//	public List<String> eA() {
+//		List<User> users = userRepo.findAll();
+//		List<String> list = new ArrayList<String>();
+//		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//		for (int i = 0; i < users.size(); i++) {
+//			User u = users.get(i);
+//			String pw = passwordEncoder.encode(u.getPassword());
+//			list.add(u.getUserName()+"   "+pw);
+//		}
+//		return list;
+//	}
 }
