@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import int222.project.exceptions.AllException;
 import int222.project.exceptions.ExceptionResponse;
 import int222.project.models.Comment;
+import int222.project.models.Product;
 import int222.project.repositories.CommentJpaRepository;
 import int222.project.repositories.ProductsJpaRepository;
 import int222.project.repositories.UserJpaRepositories;
@@ -48,10 +49,11 @@ public class CommentRestController {
 	}
 	@PostMapping("/user/addcomment")
 	public Comment addCommment(@RequestBody Comment comment,Authentication authen) {
+		Product p = productRepo.findById(comment.getProduct().getProductId()).get(); 
 		if(!comment.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your comment" );
 		}
-		if(comment.getProduct().getUser().getUserName().equals(authen.getName())) {
+		if(p.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT,"can not comment your product");
 		}
 		return commentJpaRepository.save(comment);
@@ -59,10 +61,11 @@ public class CommentRestController {
 	}
 	@PutMapping("/user/editcomment")
 	public Comment editComment(@RequestBody Comment comment,Authentication authen) {
+		Product p = productRepo.findById(comment.getProduct().getProductId()).get(); 
 		if(!comment.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please put your comment" );
 		}
-		if(comment.getProduct().getUser().getUserName().equals(authen.getName())) {
+		if(p.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT,"can not comment your product");
 		}
 		Comment c = commentJpaRepository.findById(comment.getCommentId()).get();
