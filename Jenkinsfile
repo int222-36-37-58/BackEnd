@@ -5,6 +5,14 @@ pipeline {
     	nodejs "nodejs"
     }
     
+    environment {
+         MYSQL_URL = credentials('MYSQL_URL')
+         MYSQL_USER = credentials('MYSQL_USER')
+         MYSQL_ROOT_PASSWORD = credentials('MYSQL_ROOT_PASSWORD')
+         ORIGIN_HOST = credentials('ORIGIN_HOST')
+         ORIGIN_METHOD = credentials('ORIGIN_METHOD')
+    }
+    
     stages {
       
         stage('stop and remove container, image') {
