@@ -165,8 +165,17 @@ public class ProductsRestController {
 	
 	@GetMapping("/products/search")
 	public List<Product> searchProduct(@RequestParam(required = false) String searchText,@RequestParam(required = false) String type,
-			@RequestParam(defaultValue = "4") Integer pageSize,@RequestParam(defaultValue = "0") Integer pageNo){
-		Pageable pageable = PageRequest.of(pageNo, pageSize,Sort.by("productId").descending());
+			@RequestParam(defaultValue = "4") Integer pageSize,@RequestParam(defaultValue = "0") Integer pageNo
+			,@RequestParam(defaultValue = "productId") String sortBy){
+		Pageable pageable ;
+		if(sortBy.equals("minPrice")) {
+			pageable = PageRequest.of(pageNo, pageSize,Sort.by("price"));
+		} else if(sortBy.equals("maxPrice")){
+			 pageable = PageRequest.of(pageNo, pageSize,Sort.by("price").descending());
+		}
+		else {
+		 pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy).descending());
+		}
 		Page<Product> pageResult = null; 
 		Type t = typeRepo.findByName(type);
 		if(type == null && searchText != null){
