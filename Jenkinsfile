@@ -18,7 +18,7 @@ pipeline {
                            sh 'docker rm backend'
                            sh 'docker image rm backend'
                     }else {
-                        echo 'Skip this stage '
+                        echo 'Skip this stage'
                     }
                 }
             }
@@ -38,7 +38,7 @@ pipeline {
             }
         }  
         
-        stage('deploy dev') {
+        stage('deploy') {
             steps {
                 sh 'docker-compose up -d'
             }
@@ -49,16 +49,10 @@ pipeline {
                 sh 'node --version '
                 sh 'npm --version '
                 sh 'npm install -g newman'
-                sh 'pwd'
                 sh 'newman run https://www.getpostman.com/collections/ad108bb37c9ad912828c'
             }
         }
         
-        stage('fake deploy production') {
-            steps {
-                echo 'deployyy!!!!'
-            }
-        }
       
     }
 }
