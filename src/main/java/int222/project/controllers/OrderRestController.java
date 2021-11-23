@@ -46,7 +46,7 @@ public class OrderRestController {
 	// ทำ page 
 	@GetMapping("/user/getuserorder")
 	public List<UserOrder> getUserOrder(Authentication authen,@RequestParam(defaultValue = "0") Integer pageNo,
-			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "date") String sortBy){
+			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "userOrderId") String sortBy){
 		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
 		User user= userRepo.findByUserName(authen.getName()).get();
 		
@@ -64,6 +64,10 @@ public class OrderRestController {
 	int q = 0;
 	Product p;
 	boolean hasProductDetail = false;
+	if(order.getOrderDetail() == null ) {
+		throw new AllException(ExceptionResponse.ERROR_CODE.NOT_NULL, "order detail can not null ");
+	}
+	
 	if(!order.getUser().getUserName().equals(authen.getName())) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your order" );
 	}
@@ -78,7 +82,7 @@ public class OrderRestController {
 		}
 	if (q < 0 ) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
-				p.getName()+"order quantity is more thana product quantity pls wait to fill stock");
+				p.getName()+"out of stock");
 	} else	{
 		p.setQuantity(q);
 		productRepo.save(p);
