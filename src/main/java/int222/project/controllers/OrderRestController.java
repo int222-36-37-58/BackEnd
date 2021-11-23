@@ -64,7 +64,7 @@ public class OrderRestController {
 	int q = 0;
 	Product p;
 	boolean hasProductDetail = false;
-	if(order.getOrderDetail() == null ) {
+	if(order.getOrderDetail().isEmpty()) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.NOT_NULL, "order detail can not null ");
 	}
 	
@@ -82,7 +82,7 @@ public class OrderRestController {
 		}
 	if (q < 0 ) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
-				p.getName()+"out of stock");
+				p.getName()+" out of stock");
 	} else	{
 		p.setQuantity(q);
 		productRepo.save(p);

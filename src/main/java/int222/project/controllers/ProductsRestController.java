@@ -93,10 +93,9 @@ public class ProductsRestController {
 		if(!product.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please delete your product" );
 		}
-//		if (product == null) {
-//			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
-//					"id: {" + id + "} Does not fine Id!!");
-//		}
+		if (!product.getOrderDetails().isEmpty()) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.CAN_NOT_DELETE, "product has been ordered" );
+		}
 		productsJpaRepository.deleteById(id);
 		try {
 			ES.deleteImage(product.getImageName());
