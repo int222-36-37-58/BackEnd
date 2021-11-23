@@ -87,7 +87,7 @@ public class OrderRestController {
 			}
 	}
 		if(!hasProductDetail) {
-			orderRepo.deleteById(uo.getUserOrderId());
+			orderRepo.delete(uo);
 		}
 		return orderRepo.findById(uo.getUserOrderId()).get();
 	}
