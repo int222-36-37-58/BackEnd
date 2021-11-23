@@ -78,7 +78,7 @@ public class OrderRestController {
 		throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your order" );
 	}
 	UserOrder uo= orderRepo.save(order);
-	try {
+	
 	for (int i = 0; i < od.size(); i++) {
 		OrderDetail orderDetail= od.get(i);
 		orderDetail.setUserOrder(uo);
@@ -103,7 +103,9 @@ public class OrderRestController {
 		hasProductDetail = true;
 			}
 		}
-	if(!hasProductDetail) {
+	
+	try {
+		if(!hasProductDetail) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.NOT_HAS_ORDERDETAIL, "orderdetail got problem");
 		}
 	}catch (AllException e) {
