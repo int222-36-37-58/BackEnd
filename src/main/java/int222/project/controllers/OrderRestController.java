@@ -63,6 +63,7 @@ public class OrderRestController {
 	List<OrderDetail> od =order.getOrderDetail();
 	int q = 0;
 	Product p;
+	boolean hasProductDetail = false;
 	if(!order.getUser().getUserName().equals(authen.getName())) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your order" );
 	}
@@ -82,8 +83,12 @@ public class OrderRestController {
 		p.setQuantity(q);
 		productRepo.save(p);
 		orderDetailRepo.save(orderDetail);
+		hasProductDetail = true;
 			}
 	}
+		if(!hasProductDetail) {
+			orderRepo.deleteById(uo.getUserOrderId());
+		}
 		return orderRepo.findById(uo.getUserOrderId()).get();
 	}
 	// ทำ page
