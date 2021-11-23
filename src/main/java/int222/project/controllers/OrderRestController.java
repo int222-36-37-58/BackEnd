@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import int222.project.exceptions.AllException;
 import int222.project.exceptions.ExceptionResponse;
+import int222.project.exceptions.ExceptionResponse.ERROR_CODE;
 import int222.project.models.OrderDetail;
 import int222.project.models.Product;
 import int222.project.models.User;
@@ -39,25 +40,30 @@ public class OrderRestController {
 	ProductsJpaRepository productRepo;
 	@Autowired
 	OrderDetailRepository orderDetailRepo;
+
 	@GetMapping("/admin/getallorder")
 	public List<UserOrder> getAllOrder() {
 		return orderRepo.findAll();
 	}
-	// ทำ page 
+
+	// ทำ page
 	@GetMapping("/user/getuserorder")
-	public List<UserOrder> getUserOrder(Authentication authen,@RequestParam(defaultValue = "0") Integer pageNo,
-			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "userOrderId") String sortBy){
+	public List<UserOrder> getUserOrder(Authentication authen, @RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "4") Integer pageSize,
+			@RequestParam(defaultValue = "userOrderId") String sortBy) {
 		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
-		User user= userRepo.findByUserName(authen.getName()).get();
-		
+		User user = userRepo.findByUserName(authen.getName()).get();
+
 		Page<UserOrder> pageResult = orderRepo.findByUser(user, pageable);
 //		if(!user.getUserName().equals(authen.getName())) {
 //			throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please get your order" );
 //			
 //		}
-		
+
 		return pageResult.getContent();
 	}
+
+	// use try catch block
 	@PostMapping("/user/addorder")
 	public UserOrder addOrder(@RequestBody UserOrder order,Authentication authen) {
 	List<OrderDetail> od =order.getOrderDetail();
@@ -67,19 +73,26 @@ public class OrderRestController {
 	if(order.getOrderDetail().isEmpty()) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.NOT_NULL, "order detail can not null ");
 	}
-	
+
 	if(!order.getUser().getUserName().equals(authen.getName())) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your order" );
 	}
 	UserOrder uo= orderRepo.save(order);
+	try {
 	for (int i = 0; i < od.size(); i++) {
 		OrderDetail orderDetail= od.get(i);
 		orderDetail.setUserOrder(uo);
 		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
 		q = p.getQuantity()-od.get(i).getQuantity();
+		if(productRepo.findById(orderDetail.getProduct().getProductId()).isEmpty()) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.HAS_BEEN_DELETE,"product has been delete");
+		}
 		if(p.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT, "cant order your product");
 		}
+		
+		
+		
 	if (q < 0 ) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
 				p.getName()+" out of stock");
@@ -89,24 +102,32 @@ public class OrderRestController {
 		orderDetailRepo.save(orderDetail);
 		hasProductDetail = true;
 			}
-	}
-		if(!hasProductDetail) {
+		}
+	if(!hasProductDetail) {
+		throw new AllException(ExceptionResponse.ERROR_CODE.NOT_HAS_ORDERDETAIL, "orderdetail got problem");
+		}
+	}catch (AllException e) {
+		if(e.getErrorCode().equals(ERROR_CODE.NOT_HAS_ORDERDETAIL)) {
 			orderRepo.delete(uo);
 		}
+	}
+		
 		return orderRepo.findById(uo.getUserOrderId()).get();
 	}
+
 	// ทำ page
 	@GetMapping("/seller/order")
-	public List<OrderDetail> getSellerOrder(Authentication authen,@RequestParam(defaultValue = "0") Integer pageNo,
-			@RequestParam(defaultValue = "4") Integer pageSize, @RequestParam(defaultValue = "orderDetailId") String sortBy){
+	public List<OrderDetail> getSellerOrder(Authentication authen, @RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "4") Integer pageSize,
+			@RequestParam(defaultValue = "orderDetailId") String sortBy) {
 		User u = userRepo.findByUserName(authen.getName()).get();
 		List<Product> p = productRepo.findByUser(u);
-		List<OrderDetail> od = new ArrayList<OrderDetail>() ;
+		List<OrderDetail> od = new ArrayList<OrderDetail>();
 		for (int i = 0; i < p.size(); i++) {
-		od.addAll(	orderDetailRepo.findByProduct(p.get(i)) );
+			od.addAll(orderDetailRepo.findByProduct(p.get(i)));
 		}
 		Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
-		final int start = (int)pageable.getOffset();
+		final int start = (int) pageable.getOffset();
 		final int end = Math.min((start + pageable.getPageSize()), od.size());
 		final Page<OrderDetail> page = new PageImpl<>(od.subList(start, end), pageable, od.size());
 		return od;
