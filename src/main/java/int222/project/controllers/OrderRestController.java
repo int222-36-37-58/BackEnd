@@ -76,7 +76,7 @@ public class OrderRestController {
 		if(p.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT, "cant order your product");
 		}
-	if (q <= 0 ) {
+	if (q < 0 ) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
 				p.getName()+"order quantity is more thana product quantity pls wait to fill stock");
 	} else	 p.setQuantity(q);
