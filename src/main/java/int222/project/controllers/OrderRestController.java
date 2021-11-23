@@ -70,7 +70,6 @@ public class OrderRestController {
 	for (int i = 0; i < od.size(); i++) {
 		OrderDetail orderDetail= od.get(i);
 		orderDetail.setUserOrder(uo);
-		orderDetailRepo.save(orderDetail);
 		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
 		q = p.getQuantity()-od.get(i).getQuantity();
 		if(p.getUser().getUserName().equals(authen.getName())) {
@@ -79,8 +78,11 @@ public class OrderRestController {
 	if (q < 0 ) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
 				p.getName()+"order quantity is more thana product quantity pls wait to fill stock");
-	} else	 p.setQuantity(q);
+	} else	{
+		p.setQuantity(q);
 		productRepo.save(p);
+		orderDetailRepo.save(orderDetail);
+			}
 	}
 		return orderRepo.findById(uo.getUserOrderId()).get();
 	}
