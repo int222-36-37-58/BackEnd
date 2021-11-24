@@ -81,12 +81,12 @@ public class OrderRestController {
 	// loop check before this create uo
 	for (int i = 0; i < od.size(); i++) {
 		OrderDetail orderDetailTest= od.get(i);
-
-		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
-		q = p.getQuantity()-od.get(i).getQuantity();
 		if(productRepo.findById(orderDetailTest.getProduct().getProductId()).isEmpty()) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.HAS_BEEN_DELETE,"product has been delete");
-		}else if(p.getUser().getUserName().equals(authen.getName())) {
+		}
+		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
+		q = p.getQuantity()-od.get(i).getQuantity();
+		 if(p.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT, "cant order your product");
 		} else if (q < 0 ) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
@@ -101,11 +101,12 @@ public class OrderRestController {
 	for (int i = 0; i < od.size(); i++) {
 		OrderDetail orderDetail= od.get(i);
 		orderDetail.setUserOrder(uo);
-		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
-		q = p.getQuantity()-od.get(i).getQuantity();
 		if(productRepo.findById(orderDetail.getProduct().getProductId()).isEmpty()) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.HAS_BEEN_DELETE,"product has been delete");
 		}
+		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
+		q = p.getQuantity()-od.get(i).getQuantity();
+		
 		if(p.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT, "cant order your product");
 		}
