@@ -77,8 +77,27 @@ public class OrderRestController {
 	if(!order.getUser().getUserName().equals(authen.getName())) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.USER_NOT_MATCH, "please post your order" );
 	}
-	UserOrder uo= orderRepo.save(order);
-	try {
+//	UserOrder testUo= orderRepo.save(order);
+	// loop check before this create uo
+	for (int i = 0; i < od.size(); i++) {
+		OrderDetail orderDetailTest= od.get(i);
+
+		p = productRepo.findById(od.get(i).getProduct().getProductId()).get();
+		q = p.getQuantity()-od.get(i).getQuantity();
+		if(productRepo.findById(orderDetailTest.getProduct().getProductId()).isEmpty()) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.HAS_BEEN_DELETE,"product has been delete");
+		}else if(p.getUser().getUserName().equals(authen.getName())) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT, "cant order your product");
+		} else if (q < 0 ) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.OUT_OF_STOCK,
+					p.getName()+" out of stock");
+		} else hasProductDetail = true;
+	}
+	if(!hasProductDetail) {
+		throw new AllException(ExceptionResponse.ERROR_CODE.NOT_HAS_ORDERDETAIL, "orderdetail got problem");
+	}
+		UserOrder uo = orderRepo.save(order);
+	
 	for (int i = 0; i < od.size(); i++) {
 		OrderDetail orderDetail= od.get(i);
 		orderDetail.setUserOrder(uo);
@@ -90,7 +109,6 @@ public class OrderRestController {
 		if(p.getUser().getUserName().equals(authen.getName())) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.YOUR_PRODUCT, "cant order your product");
 		}
-		
 		
 		
 	if (q < 0 ) {
@@ -106,13 +124,13 @@ public class OrderRestController {
 	if(!hasProductDetail) {
 		throw new AllException(ExceptionResponse.ERROR_CODE.NOT_HAS_ORDERDETAIL, "orderdetail got problem");
 		}
-	}catch (AllException e) {
-		throw new AllException(e.getErrorCode(),e.getMessage());
-	}finally {
+//	}catch (AllException e) {
+//		throw new AllException(e.getErrorCode(),e.getMessage());
+	
 		if(!hasProductDetail) {
 			orderRepo.delete(uo);
 		}
-	}
+	
 		
 		return orderRepo.findById(uo.getUserOrderId()).get();
 	}
