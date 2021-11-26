@@ -19,7 +19,7 @@ public class OrderDetail {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int orderDetailId;
 	private int quantity;
-	private int totalPrice;
+	private double totalPrice;
 
 //	@JsonIgnoreProperties
 	
@@ -51,11 +51,11 @@ public class OrderDetail {
 		this.quantity = quantity;
 	}
 
-	public int getTotalPrice() {
+	public double getTotalPrice() {
 		return totalPrice;
 	}
 
-	public void setTotalPrice(int totalPrice) {
+	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
 

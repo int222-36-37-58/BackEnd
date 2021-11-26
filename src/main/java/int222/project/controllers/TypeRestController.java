@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import int222.project.exceptions.AllException;
+import int222.project.exceptions.ExceptionResponse;
 import int222.project.models.Type;
 import int222.project.repositories.TypeJpaRepository;
 
@@ -29,18 +31,37 @@ public class TypeRestController {
 	public Type getBrand(@PathVariable int typeId) {
 		return typeJpaRepository.findById(typeId).orElse(null);
 	};
-	@PostMapping("/addtype")
+	//edit add เช็คชื่อซ้ำ
+	@PostMapping("/admin/addtype")
 	public Type addType(@RequestBody Type type) {
+		if(typeJpaRepository.findByName(type.getName())!= null) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
+					"this name has been use"  );
+		}
 		return typeJpaRepository.save(type);
 	}
-	@DeleteMapping("/deletetype/{id}")
+	@DeleteMapping("/admin/deletetype/{id}")
 	public String deleteType(@PathVariable int id) {
+		Type type = typeJpaRepository.findById(id).get();
+		if(typeJpaRepository.findById(id).isEmpty()) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.NOT_NULL,
+					"this don't has this type id !"  );
+		}
+		if(!type.getProducts().isEmpty()) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.NOT_NULL,
+					"this type has been use in product !"  );
+		}
 		typeJpaRepository.deleteById(id);
+		
 		return "delete success" ;
 	}
-	@PutMapping("edittype/{id}")
+	@PutMapping("/admin/edittype/{id}")
 	public Type editeType(@RequestBody Type type ) {
 		Type old = typeJpaRepository.findById(type.getTypeId()).get();
+		if(typeJpaRepository.findByName(type.getName())!= null) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.NAME_DUPLICATE,
+					"this name has been use"  );
+		}
 		old.setName(type.getName());
 		return typeJpaRepository.save(old);
 	}

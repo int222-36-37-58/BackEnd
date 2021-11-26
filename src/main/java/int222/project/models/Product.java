@@ -4,6 +4,7 @@ import java.security.Timestamp;
 import java.sql.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -44,10 +45,10 @@ public class Product {
 	@JoinColumn(name = "userId", nullable = false)
 	private User user;
 
-	@OneToMany(mappedBy = "product")
+	@OneToMany(cascade= CascadeType.REMOVE,mappedBy = "product")
 	private List<OrderDetail> orderDetails;
 	
-	@OneToMany( mappedBy = "product")
+	@OneToMany(cascade= CascadeType.REMOVE, mappedBy = "product")
 	private List<Comment> comments;
 
 	public int getProductId() {
