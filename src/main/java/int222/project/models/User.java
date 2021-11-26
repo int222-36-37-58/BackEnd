@@ -2,6 +2,7 @@ package int222.project.models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,6 +25,7 @@ public class User {
 	private String tel;
 	private String fullName;
 	private String role;
+	private String status;
 	
 	@OneToMany(orphanRemoval = true, mappedBy = "user")
 	private List<Product> product;
@@ -112,6 +114,14 @@ public class User {
 
 	public void setComment(List<Comment> comment) {
 		this.comment = comment;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	

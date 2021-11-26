@@ -127,7 +127,18 @@ public class UserController {
 	}
 	@DeleteMapping("/admin/delete/{id}") // change name
 	public String deleteUser(@PathVariable int id) {
+		Optional<User> userO =  userRepo.findById(id);
+		User user = userO.get();
+		if(userO.isEmpty()) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.NOT_NULL,
+					"don't has this user id !"  );
+		}if (!user.getProduct().isEmpty() || !user.getUserOrder().isEmpty()) {
+			user.setStatus("inactive");
+			userRepo.save(user);
+		}
+		else 
 		userRepo.deleteById(id);
+		
 		return "delete success";
 	}
 	@PutMapping("/admin/edituser")//   b crypt checkด้วย
