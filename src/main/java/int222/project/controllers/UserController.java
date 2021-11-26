@@ -38,7 +38,12 @@ public class UserController {
 
 	@GetMapping("/user/getbyname")
 	public User getAllUser(Authentication authen) {
-		return userRepo.findByUserName(authen.getName()).get();
+		User user = userRepo.findByUserName(authen.getName()).get();
+		if(user.getStatus().equals("inactive")) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.NOT_NULL,
+					"this account inactive please contact the admin!!"  );
+		}
+		return user;
 	};
 
 	@PostMapping("/register")
