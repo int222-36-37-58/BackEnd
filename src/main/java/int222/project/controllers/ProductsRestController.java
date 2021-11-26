@@ -27,6 +27,7 @@ import int222.project.repositories.ProductsJpaRepository;
 import int222.project.repositories.TypeJpaRepository;
 import int222.project.repositories.UserJpaRepositories;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,11 +49,16 @@ public class ProductsRestController {
 
 	@GetMapping("/products/{id}")
 	public Product show(@PathVariable int id) {
-		if (productsJpaRepository.findById(id).isEmpty()) {
+		Optional<Product> productO = productsJpaRepository.findById(id);
+		if (productO.isEmpty()) {
 			throw new AllException(ExceptionResponse.ERROR_CODE.DOES_NOT_FIND_ID,
 					"id: {" + id + "} Does not fine Id!!");
 		}
-		return productsJpaRepository.findById(id).orElse(null);
+		if(productO.get().getUser().getStatus().equals("inactive")) {
+			throw new AllException(ExceptionResponse.ERROR_CODE.NOT_NULL,
+					"this account inactive please contact the admin!!"  );
+		}
+		return productO.orElse(null);
 	};
 
 	@PostMapping("seller/products/add")
@@ -166,6 +172,8 @@ public class ProductsRestController {
 	public List<Product> searchProduct(@RequestParam(required = false) String searchText,@RequestParam(required = false) String type,
 			@RequestParam(defaultValue = "4") Integer pageSize,@RequestParam(defaultValue = "0") Integer pageNo
 			,@RequestParam(defaultValue = "productId") String sortBy, @RequestParam(required = false) String isdescending){
+		
+		
 		Pageable pageable ;
 		if(isdescending.equals("yes")) {
 			pageable = PageRequest.of(pageNo, pageSize,Sort.by(sortBy).descending());
@@ -186,8 +194,18 @@ public class ProductsRestController {
 			pageResult = productsJpaRepository.searchByNameLikeAndFilter(searchText, t ,pageable);
 			
 		}
-		
-		return pageResult.getContent();
+		List<Product> filterProduct = pageResult.getContent();
+		for (int i = 0; i < filterProduct.size() ; i++) {
+			if(filterProduct.get(i).getUser().getStatus().equals("inactive")) {
+				filterProduct.remove(i);
+				i= i-1;
+			}
+			if(filterProduct.get(i) == null) {
+				break;
+			}
+			
+		}
+		return filterProduct;
 		
 	}
 	@GetMapping("/seller/products/sellerproduct/{name}")
