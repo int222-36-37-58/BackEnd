@@ -45,10 +45,10 @@ public class Product {
 	@JoinColumn(name = "userId", nullable = false)
 	private User user;
 
-//	@OneToMany(cascade= CascadeType.PERSIST,mappedBy = "product")
+	@OneToMany(mappedBy = "product")
 	private List<OrderDetail> orderDetails;
 	
-//	@OneToMany(cascade= CascadeType.REMOVE, mappedBy = "product")
+	@OneToMany( mappedBy = "product")
 	private List<Comment> comments;
 
 	public int getProductId() {
