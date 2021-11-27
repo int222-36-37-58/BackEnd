@@ -171,7 +171,7 @@ public class ProductsRestController {
 	@GetMapping("/products/search")
 	public List<Product> searchProduct(@RequestParam(required = false) String searchText,@RequestParam(required = false) String type,
 			@RequestParam(defaultValue = "4") Integer pageSize,@RequestParam(defaultValue = "0") Integer pageNo
-			,@RequestParam(defaultValue = "productId") String sortBy, @RequestParam(required = false) String isdescending){
+			,@RequestParam(defaultValue = "productId") String sortBy, @RequestParam(defaultValue = "yes") String isdescending){
 		
 		
 		Pageable pageable ;
@@ -195,17 +195,20 @@ public class ProductsRestController {
 			
 		}
 		List<Product> filterProduct = pageResult.getContent();
-		for (int i = 0; i < filterProduct.size() ; i++) {
-			if(filterProduct.get(i).getUser().getStatus().equals("inactive")) {
-				filterProduct.remove(i);
-				i= i-1;
-			}
-			if(filterProduct.get(i) == null) {
+		List<Product>  modiList = new ArrayList<Product>(filterProduct);
+		for (int i = 0; i < modiList.size() ; i++) {
+			
+			if(modiList.get(i) == null) {
 				break;
 			}
+			if(modiList.get(i).getUser().getStatus().equals("inactive")) {
+				modiList.remove(i);
+				i= i-1;
+			}
 			
+
 		}
-		return filterProduct;
+		return modiList;
 		
 	}
 	@GetMapping("/seller/products/sellerproduct/{name}")

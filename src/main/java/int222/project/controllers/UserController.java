@@ -169,6 +169,7 @@ public class UserController {
 		userOld.setTel(user.getTel());
 		userOld.setFullName(user.getFullName());
 		userOld.setRole(user.getRole());
+		userOld.setStatus(user.getStatus());
 		return userRepo.save(userOld);
 	}
 //	@GetMapping("/user/thisuser")
